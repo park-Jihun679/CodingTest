@@ -2,38 +2,41 @@ import java.util.*;
 
 class Solution {
     public int solution(int n, int[][] wires) {
-        List<Integer>[] graph = new ArrayList[n + 1];
-        for (int i = 1; i <= n; i++) graph[i] = new ArrayList<>();
-        for (int[] w : wires) {
-            graph[w[0]].add(w[1]);
-            graph[w[1]].add(w[0]);
-        }
-
-        int min = n;
-
-        for (int[] cut : wires) {
-            // 전선 하나 끊기
-            graph[cut[0]].remove(Integer.valueOf(cut[1]));
-            graph[cut[1]].remove(Integer.valueOf(cut[0]));
-
+        int answer = n;
+        
+        for (int i = 0; i < n - 1; i ++) {
+            List<List<Integer>> graph = new ArrayList<>();
+            for (int j = 0; j < n + 1; j ++) {
+                graph.add(new ArrayList<>());
+            }
+            
             boolean[] visited = new boolean[n + 1];
-            int count = dfs(graph, visited, cut[0]);
-
-            min = Math.min(min, Math.abs(n - 2 * count));
-
-            // 전선 복구
-            graph[cut[0]].add(cut[1]);
-            graph[cut[1]].add(cut[0]);
+            
+            for (int j = 0; j < n - 1; j++) {
+                if (i == j) continue;
+                int a = wires[j][0];
+                int b = wires[j][1];
+                graph.get(a).add(b);
+                graph.get(b).add(a);
+            }
+            
+            int count = dfs(graph, visited, 1);
+            int minDiff = Math.abs(count - (n - count));
+            answer = Math.min(answer, minDiff);
+            
         }
-
-        return min;
+        
+        return answer;
     }
-
-    int dfs(List<Integer>[] g, boolean[] v, int cur) {
-        v[cur] = true;
-        int sum = 1;
-        for (int next : g[cur])
-            if (!v[next]) sum += dfs(g, v, next);
-        return sum;
+    
+    int dfs (List<List<Integer>> graph, boolean[] visited, int start) {
+        visited[start] = true;
+        int count = 1;
+        for (int next : graph.get(start)) {
+            if (!visited[next]) {
+                count += dfs(graph, visited, next);
+            }
+        }
+        return count;
     }
 }
