@@ -11,9 +11,9 @@ class Solution {
         }
     }
     
-    private int getDiffCount(String word1, String word2) {
+    int getDiffCount(String word1, String word2) {
         int count = 0;
-        for(int i = 0; i < word1.length(); i ++) {
+        for (int i = 0; i < word1.length(); i++) {
             if(word1.charAt(i) != word2.charAt(i)) {
                 count ++;
             }
@@ -22,8 +22,10 @@ class Solution {
     }
     
     public int solution(String begin, String target, String[] words) {
+        int answer = 0;
         Set<String> visited = new HashSet<>();
         Queue<Word> queue = new LinkedList<>();
+        
         queue.add(new Word(begin, 0));
         visited.add(begin);
         
@@ -33,14 +35,15 @@ class Solution {
             if (cur.word.equals(target)) {
                 return cur.count;
             }
+            
             for (String w : words) {
-                if(!visited.contains(w) && getDiffCount(cur.word, w) == 1) {
+                if (!visited.contains(w) && getDiffCount(cur.word, w) == 1) {
                     queue.add(new Word(w, cur.count + 1));
                     visited.add(w);
                 }
             }
         }
-        
-        return 0;
+            
+        return answer;
     }
 }
