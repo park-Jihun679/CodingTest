@@ -1,18 +1,16 @@
 from itertools import permutations
 
 def solution(k, dungeons):
-    answer = 0
+    max_count = 0
     
     for order in permutations(dungeons, len(dungeons)):
         now_cost = k
         count = 0
-        
         for need, cost in order:
             if now_cost >= need:
-                now_cost -= cost
                 count += 1
+                now_cost -= cost
             else: break
+        max_count = max(max_count, count)
     
-        answer = max(count, answer)
-    
-    return answer
+    return max_count
